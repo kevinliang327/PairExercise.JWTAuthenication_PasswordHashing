@@ -53,7 +53,15 @@ app.delete("/api/auth", async (req, res, next) => {
 
 app.get("/api/users/:userId/notes", requireToken, async (req, res, next) => {
   try {
-    res.send(await Note.byUserId(parseInt(req.params.userId)));
+    const user = await Note.byUserId(parseInt(req.params.userId));
+
+    if (parseInt(req.params.id) !== user.id) {
+      const error = "Not allowed to access another user's notes";
+      error.status = 403;
+      throw error;
+    }
+
+    res.send(user);
   } catch (error) {
     next(error);
   }
