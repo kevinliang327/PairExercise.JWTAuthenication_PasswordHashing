@@ -52,10 +52,8 @@ app.delete("/api/auth", async (req, res, next) => {
 });
 
 app.get("/api/users/:userId/notes", requireToken, async (req, res, next) => {
-  console.log(req.params);
   try {
-    const userId = jwt.verify(req.params.userId, process.env.JWT);
-    res.send(await Note.byUserId(userId));
+    res.send(await Note.byUserId(req.params.userId));
   } catch (error) {
     next(error);
   }
