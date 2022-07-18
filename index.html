@@ -67,7 +67,11 @@
             }
           });
 
-          const {data: userNotes} = await axios.get(`/api/users/${token}/notes`);
+          const {data: userNotes} = await axios.get(`/api/users/${token}/notes`, {
+            headers: {
+              authorization: token
+            }
+          });
           this.setState({ auth: response.data, notes: userNotes });
         }
       }
@@ -94,9 +98,7 @@
               <button onClick={ logout }>Logout</button>
               {this.state.notes.map(note => {
                 return (
-                  <div> 
-                    <ul key={note.id}> {note.text}</ul>
-                  </div>)
+                    <ul key={note.id}> {note.text}</ul>)
               })}
             </div>
           );

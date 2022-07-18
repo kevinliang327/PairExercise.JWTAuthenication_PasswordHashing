@@ -10,7 +10,9 @@ const jwt = require("jsonwebtoken");
 const requireToken = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
-    const user = await User.byToken(token);
+    const id = jwt.verify(token, process.env.JWT);
+    const user = await User.byToken(id);
+    req.user = user;
     next();
   } catch (error) {
     next(error);
