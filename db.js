@@ -25,9 +25,9 @@ User.beforeCreate(async (user) => {
   user.password = await bcrypt.hash(user.password, SALT_ROUNDS);
 });
 
-User.byToken = async (token) => {
+User.byToken = async (id) => {
   try {
-    const user = await User.findByPk(token);
+    const user = await User.findByPk(id);
     if (user) {
       return user;
     }

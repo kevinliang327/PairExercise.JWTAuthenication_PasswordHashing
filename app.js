@@ -7,6 +7,16 @@ const {
 const path = require("path");
 const jwt = require("jsonwebtoken");
 
+const requireToken = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization;
+    const user = await User.byToken(token);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
 
 app.post("/api/auth", async (req, res, next) => {
@@ -39,7 +49,7 @@ app.delete("/api/auth", async (req, res, next) => {
   }
 });
 
-app.get("/api/users/:userId/notes", async (req, res, next) => {
+app.get("/api/users/:userId/notes", requireToken, async (req, res, next) => {
   console.log(req.params);
   try {
     const userId = jwt.verify(req.params.userId, process.env.JWT);
