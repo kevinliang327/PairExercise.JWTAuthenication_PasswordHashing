@@ -94,8 +94,8 @@
           return (
             <div>
               <h1> Welcome { auth.username } </h1>
-              <h2> Notes for {auth.username}: </h2>
               <button onClick={ logout }>Logout</button>
+              <h2> Notes for {auth.username}: </h2>
               {this.state.notes.map(note => {
                 return (
                     <ul key={note.id}> {note.text}</ul>)
