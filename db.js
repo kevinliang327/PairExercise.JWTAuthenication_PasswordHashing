@@ -50,9 +50,6 @@ User.authenticate = async ({ username, password }) => {
   if (user && (await bcrypt.compare(password, user.password))) {
     const userToken = jwt.sign(user.id, process.env.JWT);
     const stored = jwt.verify(userToken, process.env.JWT);
-    console.log("this is the actual user id from the db", user.id);
-    console.log("this is the jwt signed user id", userToken);
-    console.log("this is the stored user in token", stored);
     return userToken;
   }
   const error = Error("bad credentials");

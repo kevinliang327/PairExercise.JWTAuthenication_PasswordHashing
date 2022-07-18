@@ -53,7 +53,7 @@ app.delete("/api/auth", async (req, res, next) => {
 
 app.get("/api/users/:userId/notes", requireToken, async (req, res, next) => {
   try {
-    res.send(await Note.byUserId(req.params.userId));
+    res.send(await Note.byUserId(parseInt(req.params.userId)));
   } catch (error) {
     next(error);
   }
