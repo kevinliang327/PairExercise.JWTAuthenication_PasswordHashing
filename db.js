@@ -49,8 +49,10 @@ User.authenticate = async ({ username, password }) => {
   });
   if (user && (await bcrypt.compare(password, user.password))) {
     const userToken = jwt.sign(user.id, process.env.JWT);
+    const stored = jwt.verify(userToken, process.env.JWT);
     console.log("this is the actual user id from the db", user.id);
     console.log("this is the jwt signed user id", userToken);
+    console.log("this is the stored user in token", stored);
     return userToken;
   }
   const error = Error("bad credentials");
@@ -63,6 +65,20 @@ const Note = conn.define("note", {
     type: STRING,
   },
 });
+
+Note.byUserId = async (userIdArg) => {
+  try {
+    const userNotes = await Note.findAll({
+      where: {
+        userId: userIdArg,
+      },
+    });
+
+    return userNotes;
+  } catch (error) {
+    throw error;
+  }
+};
 
 Note.belongsTo(User);
 User.hasMany(Note);
@@ -77,11 +93,31 @@ const syncAndSeed = async () => {
   const [lucy, moe, larry] = await Promise.all(
     credentials.map((credential) => User.create(credential))
   );
+
+  const notes = [
+    { text: "test1" },
+    { text: "test2" },
+    { text: "test3" },
+    { text: "test4" },
+  ];
+  const [note1, note2, note3, note4] = await Promise.all(
+    notes.map((note) => Note.create(note))
+  );
+  await lucy.setNotes(note1);
+  await moe.setNotes(note2);
+  await larry.setNotes([note3, note4]);
+
   return {
     users: {
       lucy,
       moe,
       larry,
+    },
+    notes: {
+      note1,
+      note2,
+      note3,
+      note4,
     },
   };
 };
